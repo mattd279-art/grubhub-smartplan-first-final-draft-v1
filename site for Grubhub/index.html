@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grubhub SmartPlan (Interactive Prototype)</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true"> </div>
+          <div class="brand-text">
+            <div class="brand-title">Grubhub</div>
+            <div class="brand-subtitle">SmartPlan Prototype</div>
+          </div>
+        </div>
+
+        <nav class="topnav" aria-label="SmartPlan top navigation">
+          <button class="topnav-link" data-route="onboarding" type="button">SmartPlan Setup</button>
+          <button class="topnav-link" data-route="dashboard" type="button">Weekly Plan</button>
+          <button class="topnav-link" data-route="checkout" type="button" id="navCheckout">Checkout</button>
+          <button class="topnav-link" data-route="deals" type="button">Grubhub+ Deals</button>
+          <button class="topnav-link" data-route="family" type="button">Family Plan</button>
+        </nav>
+      </header>
+
+      <div class="layout">
+        <aside class="sidebar" aria-label="SmartPlan sidebar navigation">
+          <div class="sidebar-section">
+            <div class="sidebar-title">SmartPlan</div>
+            <button class="sidebar-link" data-route="onboarding" type="button">1) Preferences</button>
+            <button class="sidebar-link" data-route="dashboard" type="button">2) Plan Dashboard</button>
+            <button class="sidebar-link" data-route="checkout" type="button">3) Checkout AI</button>
+          </div>
+          <div class="sidebar-section">
+            <div class="sidebar-title">Extras</div>
+            <button class="sidebar-link" data-route="deals" type="button">Grubhub+ Optimization</button>
+            <button class="sidebar-link" data-route="family" type="button">Grubhub+ Family Plan</button>
+          </div>
+
+          <div class="sidebar-footer">
+            <div class="mini-label">Prototype data</div>
+            <div class="mini-value" id="prototypeStatus">Not generated</div>
+            <button class="ghost-button" type="button" id="resetBtn">Reset</button>
+          </div>
+        </aside>
+
+        <main class="content">
+          <!-- Onboarding / Preferences -->
+          <section class="view" id="view-onboarding">
+            <div class="page-header">
+              <div>
+                <h1 class="page-title">Set Your Preferences</h1>
+                <div class="page-subtitle">
+                  SmartPlan uses your inputs to balance cooking, restaurant orders, and spending.
+                </div>
+              </div>
+              <div class="header-badges">
+                <span class="pill">AI Personalized Weekly Plan</span>
+                <span class="pill pill-outline">Budget Intelligence</span>
+              </div>
+            </div>
+
+            <div class="two-col">
+              <div class="mockup-col">
+                <div class="mockup-frame">
+                  <img
+                    src="./assets/mockup-1.png"
+                    alt="SmartPlan preferences mockup"
+                    class="mockup-img"
+                  />
+                </div>
+                <div class="help-note">
+                  Tip: tweak cooking vs ordering and budget. The dashboard + checkout will update.
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-title">Your weekly setup</div>
+
+                <div class="form-grid">
+                  <label class="field">
+                    <span class="field-label">Daily calorie goal</span>
+                    <input
+                      type="number"
+                      min="500"
+                      step="50"
+                      value="1800"
+                      id="prefCalorieGoal"
+                    />
+                    <span class="field-hint">e.g., 1800</span>
+                  </label>
+
+                  <label class="field">
+                    <span class="field-label">Weekly food budget ($)</span>
+                    <input type="number" min="0" step="5" value="50" id="prefWeeklyBudget" />
+                    <span class="field-hint">Includes cooking + ordering</span>
+                  </label>
+
+                  <label class="field">
+                    <span class="field-label">Meals per day</span>
+                    <select id="prefMealsPerDay">
+                      <option value="2">2 meals</option>
+                      <option value="3" selected>3 meals</option>
+                      <option value="4">4 meals</option>
+                    </select>
+                  </label>
+
+                  <label class="field">
+                    <span class="field-label">Cooking frequency (times/week)</span>
+                    <input type="range" min="0" max="7" step="1" value="3" id="prefCookTimesPerWeek" />
+                    <div class="range-row">
+                      <span class="muted">0</span>
+                      <span class="range-value" id="prefCookTimesPerWeekVal">3</span>
+                      <span class="muted">7</span>
+                    </div>
+                    <span class="field-hint">SmartPlan cooks some dinners based on this.</span>
+                  </label>
+
+                  <label class="field">
+                    <span class="field-label">Preferred cooking time</span>
+                    <select id="prefCookTimeWindow">
+                      <option value="Any" selected>Any</option>
+                      <option value="Morning">Morning</option>
+                      <option value="Afternoon">Afternoon</option>
+                      <option value="Evening">Evening</option>
+                    </select>
+                  </label>
+
+                  <label class="field">
+                    <span class="field-label">Dietary restrictions</span>
+                    <div class="chips" id="dietChips" role="group" aria-label="Dietary restrictions">
+                      <button class="chip" type="button" data-chip="Vegetarian">Vegetarian</button>
+                      <button class="chip" type="button" data-chip="Gluten-Free">Gluten-Free</button>
+                      <button class="chip" type="button" data-chip="Halal">Halal</button>
+                      <button class="chip" type="button" data-chip="Vegan">Vegan</button>
+                    </div>
+                    <span class="field-hint">Multiple selections allowed.</span>
+                  </label>
+
+                  <label class="field span-2">
+                    <span class="field-label">Allergies (optional)</span>
+                    <input type="text" placeholder="e.g., peanuts, shellfish" id="prefAllergies" />
+                  </label>
+
+                  <label class="field span-2">
+                    <span class="field-label">Preferred cuisines</span>
+                    <div class="chips" id="cuisineChips" role="group" aria-label="Preferred cuisines">
+                      <button class="chip" type="button" data-chip="Italian">Italian</button>
+                      <button class="chip" type="button" data-chip="Mexican">Mexican</button>
+                      <button class="chip" type="button" data-chip="Asian">Asian</button>
+                      <button class="chip" type="button" data-chip="Mediterranean">Mediterranean</button>
+                      <button class="chip" type="button" data-chip="American">American</button>
+                    </div>
+                    <span class="field-hint">Used for both recipes and restaurant picks.</span>
+                  </label>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="row">
+                  <div class="profile-select card-lite">
+                    <div class="mini-label">Family member profile (prototype)</div>
+                    <select id="profileSelect" aria-label="Active profile">
+                      <option value="m1">Riley (Student)</option>
+                      <option value="m2">Josh (Roommate)</option>
+                      <option value="m3">Mom</option>
+                    </select>
+                  </div>
+                  <button class="primary-button" type="button" id="generateBtn">
+                    Get My Plan
+                  </button>
+                </div>
+
+                <div class="fineprint">
+                  This is a UI prototype: prices and recommendations are simulated to demonstrate SmartPlan flows.
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Weekly dashboard -->
+          <section class="view hidden" id="view-dashboard">
+            <div class="page-header">
+              <div>
+                <h1 class="page-title">Weekly Plan Dashboard</h1>
+                <div class="page-subtitle">
+                  Personalized meals, grocery list, and budget intelligence in one view.
+                </div>
+              </div>
+              <div class="header-actions">
+                <button class="ghost-button" type="button" id="openGroceryBtn">View Grocery List</button>
+                <button class="primary-button" type="button" id="goCheckoutBtn" disabled>Checkout</button>
+              </div>
+            </div>
+
+            <div class="grid-3">
+              <div class="stat-card">
+                <div class="stat-title">Daily goal</div>
+                <div class="stat-value" id="statDailyCalories">1,800</div>
+                <div class="stat-sub muted">Calories / day</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-title">Weekly budget</div>
+                <div class="stat-value" id="statWeeklyBudget">$50</div>
+                <div class="stat-sub muted">
+                  Spend so far: <span id="statSpendSoFar">$0</span>
+                </div>
+                <div class="progress">
+                  <div class="progress-bar" id="budgetProgressBar" style="width:0%"></div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-title">This week’s savings</div>
+                <div class="stat-value" id="statSavings">$0</div>
+                <div class="stat-sub muted" id="statSavingsSub">From cooking + deals</div>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="dashboard-toolbar">
+              <div class="toolbar-left">
+                <div class="mini-label">Select a day to checkout</div>
+                <div class="segmented" id="checkoutDaySeg" role="radiogroup" aria-label="Checkout day">
+                  <button class="seg-btn" type="button" data-day="Mon" aria-checked="true">Mon</button>
+                  <button class="seg-btn" type="button" data-day="Tue">Tue</button>
+                  <button class="seg-btn" type="button" data-day="Wed">Wed</button>
+                  <button class="seg-btn" type="button" data-day="Thu">Thu</button>
+                  <button class="seg-btn" type="button" data-day="Fri">Fri</button>
+                  <button class="seg-btn" type="button" data-day="Sat">Sat</button>
+                  <button class="seg-btn" type="button" data-day="Sun">Sun</button>
+                </div>
+              </div>
+              <div class="toolbar-right">
+                <label class="toggle" title="Simulate Grubhub+ benefits">
+                  <input type="checkbox" id="plusToggle" checked />
+                  <span class="toggle-ui" aria-hidden="true"></span>
+                  <span class="toggle-label">Grubhub+ benefits on</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="weekly-grid" id="weeklyGrid" aria-label="Weekly meal plan"></div>
+
+            <div class="fineprint">
+              Cook vs Order toggles estimate cost changes and drive Budget Intelligence + checkout prompts.
+            </div>
+          </section>
+
+          <!-- Checkout -->
+          <section class="view hidden" id="view-checkout">
+            <div class="page-header">
+              <div>
+                <h1 class="page-title">Checkout AI Assistant</h1>
+                <div class="page-subtitle">
+                  Contextual guidance during checkout, plus fee and discount transparency.
+                </div>
+              </div>
+              <div class="header-actions">
+                <button class="ghost-button" type="button" id="backToPlanBtn">Back to Plan</button>
+              </div>
+            </div>
+
+            <div class="two-col">
+              <div class="card">
+                <div class="card-title">Order for <span id="checkoutDayLabel">Mon</span></div>
+
+                <div class="section-title">Meals</div>
+                <div class="checkout-list" id="checkoutList"></div>
+
+                <div class="divider"></div>
+
+                <div class="section-title">Delivery vs Pickup</div>
+                <div class="radio-row">
+                  <label class="radio">
+                    <input type="radio" name="fulfillment" value="delivery" checked />
+                    <span>Delivery</span>
+                  </label>
+                  <label class="radio">
+                    <input type="radio" name="fulfillment" value="pickup" />
+                    <span>Pickup (avoid fees)</span>
+                  </label>
+                </div>
+
+                <div class="field">
+                  <span class="field-label">Delivery window</span>
+                  <select id="deliveryWindow">
+                    <option value="ASAP">ASAP (cheapest window varies)</option>
+                    <option value="12-1">12-1</option>
+                    <option value="5-6">5-6</option>
+                    <option value="8-9">8-9</option>
+                  </select>
+                </div>
+
+                <div class="row row-end">
+                  <button class="ghost-button" type="button" id="recalcBtn">Recalculate</button>
+                  <button class="primary-button" type="button" id="placeOrderBtn">Place Order</button>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-title">Price Breakdown</div>
+
+                <div class="price-lines" id="priceLines"></div>
+
+                <div class="divider"></div>
+
+                <div class="total-line">
+                  <div>Total</div>
+                  <div class="total-value" id="totalPrice">$0.00</div>
+                </div>
+
+                <div class="fineprint" id="checkoutFineprint">
+                  Taxes and fees are simulated for prototype purposes.
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Deals / Grubhub+ Optimization -->
+          <section class="view hidden" id="view-deals">
+            <div class="page-header">
+              <div>
+                <h1 class="page-title">Grubhub+ Optimization</h1>
+                <div class="page-subtitle">
+                  SmartPlan highlights best deals and recommends stacking promotions + pickup credits.
+                </div>
+              </div>
+              <div class="header-actions">
+                <button class="ghost-button" type="button" id="backToDashboardFromDealsBtn">Back to Plan</button>
+              </div>
+            </div>
+
+            <div class="two-col">
+              <div class="card">
+                <div class="card-title">Membership benefits</div>
+                <label class="toggle toggle-block">
+                  <input type="checkbox" id="plusToggle2" checked />
+                  <span class="toggle-ui" aria-hidden="true"></span>
+                  <span class="toggle-label">Enable Grubhub+ benefits</span>
+                </label>
+
+                <div class="divider"></div>
+
+                <div class="section-title">Deals to stack</div>
+                <div class="deal-list" id="dealList"></div>
+
+                <div class="divider"></div>
+
+                <div class="row row-end">
+                  <button class="primary-button" type="button" id="applyDealsBtn">Apply to Plan & Checkout</button>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-title">Estimated impact</div>
+                <div class="impact-row">
+                  <div>
+                    <div class="mini-label">Discount total (est.)</div>
+                    <div class="impact-value" id="impactDiscount">$0.00</div>
+                  </div>
+                  <div>
+                    <div class="mini-label">Delivery fee avoided (est.)</div>
+                    <div class="impact-value" id="impactFee">$0.00</div>
+                  </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="section-title">Recommendations</div>
+                <div class="assistant-inline" id="dealRecommendations"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Family Plan -->
+          <section class="view hidden" id="view-family">
+            <div class="page-header">
+              <div>
+                <h1 class="page-title">Grubhub+ Family Plan</h1>
+                <div class="page-subtitle">
+                  Share Grubhub+ benefits across profiles while keeping preferences and plans separate.
+                </div>
+              </div>
+              <div class="header-actions">
+                <button class="ghost-button" type="button" id="backToDashboardFromFamilyBtn">Back to Plan</button>
+              </div>
+            </div>
+
+            <div class="two-col">
+              <div class="card">
+                <div class="card-title">Shared subscription + credits</div>
+
+                <label class="toggle toggle-block">
+                  <input type="checkbox" id="plusToggle3" checked />
+                  <span class="toggle-ui" aria-hidden="true"></span>
+                  <span class="toggle-label">Family Grubhub+ enabled</span>
+                </label>
+
+                <div class="field">
+                  <span class="field-label">Shared Dining Dollars / credits</span>
+                  <input type="number" id="sharedCreditsInput" min="0" step="10" value="240" />
+                  <span class="field-hint">Credits pool shared across members.</span>
+                </div>
+
+                <div class="row row-end">
+                  <button class="ghost-button" type="button" id="saveFamilyCreditsBtn">Save Credits</button>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="section-title">Members</div>
+                <div class="family-list" id="familyList"></div>
+
+                <div class="divider"></div>
+
+                <div class="section-title">Add member</div>
+                <div class="family-add">
+                  <label class="field">
+                    <span class="field-label">Name</span>
+                    <input type="text" id="newMemberName" placeholder="e.g., Dad" />
+                  </label>
+                  <label class="field">
+                    <span class="field-label">Role</span>
+                    <select id="newMemberRole">
+                      <option value="Student">Student</option>
+                      <option value="Roommate">Roommate</option>
+                      <option value="Parent">Parent</option>
+                    </select>
+                  </label>
+                  <div class="row row-end">
+                    <button class="primary-button" type="button" id="addMemberBtn">Add</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-title">Per-member preferences preview</div>
+                <div class="fineprint">
+                  In this prototype, preferences are stored per member profile and drive plan generation.
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="section-title">Active profile</div>
+                <div class="profile-chip-row">
+                  <div class="mini-label">Switch preview for planning</div>
+                  <select id="familyProfileSwitch" aria-label="Switch active family profile">
+                    <!-- populated by JS -->
+                  </select>
+                  <button class="primary-button" type="button" id="useProfileBtn">Use Profile for Next Plan</button>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="section-title">Member budget snapshot</div>
+                <div class="family-snapshot" id="familySnapshot"></div>
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <!-- Right assistant panel -->
+        <aside class="assistant-panel">
+          <div class="assistant-header">
+            <div class="assistant-title">Student Support AI</div>
+            <div class="assistant-subtitle">Contextual guidance during planning + checkout</div>
+          </div>
+          <div class="assistant-body">
+            <div class="assistant-section">
+              <div class="assistant-section-title">Messages</div>
+              <div class="assistant-messages" id="assistantMessages" aria-live="polite"></div>
+            </div>
+
+            <div class="assistant-section">
+              <div class="assistant-section-title">Gamification</div>
+              <div class="gamification">
+                <div class="game-metric">
+                  <div class="mini-label">Savings summary</div>
+                  <div class="metric-value" id="gameSavings">$0</div>
+                </div>
+                <div class="game-metric">
+                  <div class="mini-label">Spending streak</div>
+                  <div class="metric-value" id="gameStreak">0 days</div>
+                </div>
+                <div class="game-metric">
+                  <div class="mini-label">Budget progress</div>
+                  <div class="metric-value" id="gameProgress">0%</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="assistant-section">
+              <div class="assistant-section-title">Quick actions</div>
+              <button class="ghost-button" type="button" id="askAiBtn">Ask AI for help</button>
+              <div class="fineprint">
+                This prototype uses simulated responses based on your chosen settings.
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- Grocery list modal -->
+    <div class="modal hidden" id="groceryModal" role="dialog" aria-modal="true" aria-label="Grocery list">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div>
+            <div class="modal-title">Automatically Generated Grocery List</div>
+            <div class="modal-subtitle">Based on your cooked meals in the weekly plan.</div>
+          </div>
+          <button class="icon-button" type="button" id="closeGroceryBtn" aria-label="Close">×</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="grocery-list" id="groceryList"></div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="ghost-button" type="button" id="clearGroceryChecksBtn">Clear checks</button>
+          <button class="primary-button" type="button" id="doneGroceryBtn">Done</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Meal details modal -->
+    <div class="modal hidden" id="mealDetailsModal" role="dialog" aria-modal="true" aria-label="Meal details">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div>
+            <div class="modal-title" id="mealDetailsTitle">Meal details</div>
+            <div class="modal-subtitle" id="mealDetailsSubtitle">—</div>
+          </div>
+          <button class="icon-button" type="button" id="closeMealDetailsBtn" aria-label="Close">×</button>
+        </div>
+        <div class="modal-body">
+          <div id="mealDetailsContent" class="assistant-inline"></div>
+        </div>
+        <div class="modal-footer">
+          <button class="primary-button" type="button" id="doneMealDetailsBtn">Done</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./data.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
+
